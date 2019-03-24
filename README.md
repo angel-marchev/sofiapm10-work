@@ -1,6 +1,5 @@
----
-title: A study to predict air pollution in Sofia geo-locations
----
+#A study to predict air pollution in Sofia geo-locations
+
 
 prof. Boryana Pelova, PhD, prof. Angel Marchev, PhD, ???
 ========================================================
