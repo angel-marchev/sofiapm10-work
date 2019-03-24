@@ -1,3 +1,8 @@
+---
+sidebar:
+  title: "Sample Title"
+  nav: sidebar-sample
+---
 # A study to predict air pollution in Sofia geo-locations
 
 
