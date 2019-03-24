@@ -1,8 +1,4 @@
----
-sidebar:
-  title: "Sample Title"
-  nav: sidebar-sample
----
+
 prof. Boryana Pelova, PhD, prof. Angel Marchev, PhD, ??? {#prof.-boryana-pelova-phd-prof.-angel-marchev-phd .ListParagraph}
 ========================================================
 
