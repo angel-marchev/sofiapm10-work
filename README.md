@@ -1,4 +1,3 @@
-{% include sidebar.html %}
 # A study to predict air pollution in Sofia geo-locations
 
 
@@ -565,3 +564,4 @@ Pollution Research,* Volume 6, pp. 540-49.
 Siwek, K. & Osowski, S., 2016. Data mining methods for prediction of air
 pollution. *Intrenational Journal of Applied Mathematics and Computer Science,*
 26(2), pp. 467-78.
+{% include sidebar.html %}
