@@ -46,17 +46,18 @@ Then based on a threshold of 5%, station pairs, which are considered too differe
 After applying the aforementioned procedure, the number of stations in the dataset was reduced from 148 to 134.
 
 ## Code
+#### Set up environment
 ```R 
 rm(list=ls())
 gc()
 ```
 Set the path of the folder with data
 ```R
-setwd("F:/DOCS-/administrativni/proekt-sofia-air/code")
+setwd("/data")
 ``` 
 Import data on EEU measurements for 2017 and 2018
 ```R
-eeu=list.files(path="F:/DOCS-/administrativni/proekt-sofia-air/code",pattern="BG*")
+eeu=list.files(path="/data",pattern="BG*")
 ddeu=lapply(eeu,read.csv,na.string=c("","NA"," "), stringsAsFactors = F, fileEncoding="UTF-16LE")
 ```
 Name data sets by stations
@@ -177,7 +178,7 @@ for (i in 1:length(teu)){
 }
 rm(i)
 ``` 
-**Aggregate official measuremnets on daily basis**
+#### Aggregate official measuremnets on daily basis
 Extract date from the time variable
 ```R 
 for (i in 1:length(teu)){
@@ -187,18 +188,36 @@ rm(i)
 ```
 Thresholds
 ```R 
-
 thresholdForRemovalMissingP1 <- 0.2 
 ```
-```R # Removes all observations where the P1 is equal to 0 for more than the threshold % of observations
-thresholdP1ForDeviationFromOfficial <- 1.25 ``` ```R # Caps the P1 of the citizen data at thresholdP1ForDeviationFromOfficial% of official P1 maximum
-thresholdForMinimumObservationDays <- 90 ``` ```R # Removes all observations with less than thresholdForMinimumObservationDays days of observation history
-thresholdForCloseness <- 0.01 ``` ```R # Determines which stations are considered close enough to comapre the P1 measurments
-thresholdForCommonObservations <- 168 ``` ```R # Number of common observations to considered a difference in measurments in P1
-thresholdForAbsoluteDifference <- 10 ``` ```R # Threshold above which citizen measurments are considered too different
-thresholdForDifferentStations <- 1 ``` ```R # Threshold showing how many close stations can have different measurments before exclusion
+Removes all observations where the P1 is equal to 0 for more than the threshold % of observations
+```R 
+thresholdP1ForDeviationFromOfficial <- 1.25
+``` 
+Caps the P1 of the citizen data at thresholdP1ForDeviationFromOfficial% of official P1 maximum
+```R 
+thresholdForMinimumObservationDays <- 90 
+``` 
+Removes all observations with less than thresholdForMinimumObservationDays days of observation history
+```R 
+thresholdForCloseness <- 0.01 
+```
+Determines which stations are considered close enough to comapre the P1 measurments
+```R 
+thresholdForCommonObservations <- 168 
+``` 
+Number of common observations to considered a difference in measurments in P1
+```R 
+thresholdForAbsoluteDifference <- 10 
+``` 
+Threshold above which citizen measurments are considered too different
+```R 
+thresholdForDifferentStations <- 1 
+``` 
+Threshold showing how many close stations can have different measurments before exclusion
 
-#Step 1 - Load libraries and packages######
+#### Step 1 - Load libraries and packages
+```R 
 if(!require(dplyr)){
   install.packages("dplyr")
   library(dplyr)
@@ -236,43 +255,64 @@ if(!require(ggplot2)){
   install.packages("ggplot2")
   library(ggplot2)
 }
-#Step 2 - Data Import######
-#Sofia topography
-SofiaTopography <- read.csv("F:/DOCS-/administrativni/proekt-sofia-air/code/sofia_topo.csv", header = TRUE,na.strings = c(""," ","NA","#NA","#NULL","NULL"),stringsAsFactors = FALSE)
+```
+#### Step 2 - Data Import
+Import the dataset. na.strings includes "NA", "NULL", "" and " ". stringsAsFactors = FALSE
+Sofia topography
+```R
+SofiaTopography <- read.csv("/data/sofia_topo.csv", header = TRUE,na.strings = c(""," ","NA","#NA","#NULL","NULL"),stringsAsFactors = FALSE)
 sapply(SofiaTopography,class)
-#Import the dataset. na.strings includes "NA", "NULL", "" and " ". stringsAsFactors = FALSE
-#Citizen data
-Data2017 <- read.csv("F:/DOCS-/administrativni/proekt-sofia-air/code/data_bg_2017.csv",header = TRUE,na.strings = c(""," ","NA","#NA","#NULL","NULL"),stringsAsFactors = FALSE)
-Data2018 <- read.csv("F:/DOCS-/administrativni/proekt-sofia-air/code/data_bg_2018.csv",header = TRUE,na.strings = c(""," ","NA","#NA","#NULL","NULL"),stringsAsFactors = FALSE)
-#Step 4 - Deal with free data and elevation data######
+```
+Citizen data
+```R
+Data2017 <- read.csv("/data/data_bg_2017.csv",header = TRUE,na.strings = c(""," ","NA","#NA","#NULL","NULL"),stringsAsFactors = FALSE)
+Data2018 <- read.csv("/data/data_bg_2018.csv",header = TRUE,na.strings = c(""," ","NA","#NA","#NULL","NULL"),stringsAsFactors = FALSE)
+```
+#### Step 4 - Deal with citizen data and topography data
+Transofrm time in Data2017 and Data2018 into POSIXct and check the classes again
+```R
 sapply(Data2017,class)
 sapply(Data2018,class)
-#Transofrm time in Data2017 and Data2018 into POSIXct and check the classes again
 Data2017 <- mutate(Data2017,time = ymd_hms(time))
 Data2018 <- mutate(Data2018,time = ymd_hms(time))
 sapply(Data2017,class)
 sapply(Data2018,class)
-#Merge the two datasets
+```
+Merge the two datasets
+```R
 DataAll <- bind_rows(Data2017,Data2018)
 sapply(DataAll,class)
 NAsbyCol <- as.data.frame(sapply(DataAll, function(x) length(which(is.na(x)))))
 DataAll <- DataAll[is.na(DataAll$geohash) == 0,]
-#Decode the geohashes
+```
+Decode the geohashes
+```R
 decodedHashes <- gh_decode(DataAll$geohash)
-#Merge with the data
+```
+Merge with the data
+```R
 DataAll <- bind_cols(DataAll,decodedHashes[,c("lat","lng")])
-#Using the function point.is.polygon we create a vector which shows if the coordiantes are in the poligon defined by the Sofia Topography map
-#Get coordinates of the stations
+```
+Using the function point.is.polygon we create a vector which shows if the coordiantes are in the poligon defined by the Sofia Topography map
+
+Get coordinates of the stations
+```R
 xOfStations = as.vector(decodedHashes$lng)
 yOfStations = as.vector(decodedHashes$lat)
-#Get coordinates of Sofia
+```
+Get coordinates of Sofia
+```R
 xOfSofia <- as.vector(SofiaTopography$Lon)
 yOfSofia <- as.vector(SofiaTopography$Lat)
-#Create the vector
+```
+Create the vector
+```R
 isStationInSofia <- as.vector(point.in.polygon(xOfStations, yOfStations, xOfSofia, yOfSofia))
 rm(xOfStations,yOfStations,xOfSofia,yOfSofia,decodedHashes,SofiaTopography,Data2017,Data2018,NAsbyCol)
 gc()
-#Sofia data
+```
+Sofia data
+```R
 DataAllSofia <- DataAll[which(isStationInSofia == 1),]
 #Look at and take care of duplicates
 Duplicates <- DataAllSofia %>%
@@ -288,7 +328,9 @@ DataAllSofia <- DataAllSofia %>%
   summarise(P1 = mean(P1),lat = mean(lat), lng = mean(lng))
 rm(Duplicates,LookAtDuplicates,DataAll,isStationInSofia)
 gc()
-#Remove observations with a lot of p1 observations equal to 0
+```
+Remove observations with a lot of p1 observations equal to 0
+```R
 CheckP1Zeroes <- DataAllSofia %>%
   group_by(geohash) %>%
   summarise(obs = n(), P1Zeroes = sum(ifelse(P1 == 0,1,0)), PercP1Zeroes = P1Zeroes / obs) %>%
@@ -297,7 +339,9 @@ notProperMeasurments <- CheckP1Zeroes[CheckP1Zeroes$PercP1Zeroes > thresholdForR
 DataAllSofia <- DataAllSofia[!(DataAllSofia$geohash %in% notProperMeasurments$geohash),]
 rm(CheckP1Zeroes,notProperMeasurments)
 gc()
-#Remove outliers for P1
+```
+Remove outliers for P1
+```R
 EEAHourly <- do.call(bind_rows,teu)
 EEADataMaxByHour <- EEAHourly %>%
   group_by(time) %>%
@@ -536,6 +580,4 @@ AllCitizenDaily <- AllCitizenDaily %>%
 
 ggplot() +
   geom_bar(data=AllCitizenDaily, aes(x = date, y = count) , stat ="identity")
-
-
-
+```
