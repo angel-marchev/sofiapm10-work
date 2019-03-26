@@ -505,13 +505,13 @@ i=5
 Change i=1,2,3,4,5 so as to get plot for each station
 ```R 
 barplot(fi[[i]]$pfimp[order(fi[[i]]$pfimp,decreasing = T)], names.arg = fi[[i]]$fname[order(fi[[i]]$pfimp,decreasing = T)],col="light blue", ylab="Importance in %",las=2)
-
-
 ``` 
 #### Get predition for P10 by stations
 NB: This prediction assumes we have weather forecast 
 Use the following code:
+```R
 f=list()
 for (i in 1:length(eu)){
-f[[i]]=predict(eq[[i]],newdata=[``` ```R inseart here new data])
+f[[i]]=predict(eq[[i]],newdata=[\#inseart here new data])
 }
+``` 
