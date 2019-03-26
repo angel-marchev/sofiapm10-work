@@ -1,4 +1,3 @@
-
 # Next day prediction (Module 3)
 
 This module explains the algorithms and techniques used to predict the PM10 particles of the so-called citizen stations defined in Module 1.
