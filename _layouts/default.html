@@ -34,11 +34,13 @@
             </ul>
           </div>
         {% endif %}
-      </div><!-- end banner -->
+        {% include header.html %}
+      </div>
+    <!-- end banner -->
 
     <div class="wrapper">
       <nav>
-        <ul>{% include header.html %}</ul>
+        <ul></ul>
       </nav>
       <section>
         {{ content }}
