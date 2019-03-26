@@ -122,7 +122,7 @@ Table 4: Augmented Dickey-Fuller test results.
 The next step of our preliminary analysis investigates the dependence between the concentration of PM10
  and the weather indicators. In text that follows, we report results only for one of the stations (this is station 9421) because similar dependencies are observed for rest of the stations (find rest of the results in section Appendix M2.). **Figure 11** provides pairwise scatterplots where the _x_-axis represents particular weather indicator, while the _y_-axis corresponds to the level of PM10 concentration. **Figure 12** presents the correlation matrix in absolute terms via color code, where hotter colors correspond to stronger linear dependence.
 
-![](/media/scatter_features.png)
+![](/media/scatter_featurs.png)
 Figure 11: Pairwise scatterplots for station 9421. The x-axis represents particular weather indicator, while the y-axis corresponds to the level of PM10 concentration. 
 
 ![](/media/correlations_.png)
