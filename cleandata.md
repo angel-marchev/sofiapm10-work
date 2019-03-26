@@ -430,12 +430,24 @@ AbsDiffBetweenCitizensCountDataframe <- data.frame(matrix(NA,length(citizenGeoha
 names(AbsDiffBetweenCitizensCountDataframe) <- seq(1:length(citizenGeohash))
 row.names(AbsDiffBetweenCitizensCountDataframe) <- seq(1:length(citizenGeohash))
 
-thresholdForCloseness <- 0.01 ``` ```R # Determines which stations are considered close enough to comapre the P1 measurments
-thresholdForCommonObservations <- 168 ``` ```R # Number of common observations to considered a difference in measurments in P1
-thresholdForAbsoluteDifference <- 10 ``` ```R # Threshold above which citizen measurments are considered too different
+thresholdForCloseness <- 0.01 
+```
+Determines which stations are considered close enough to comapre the P1 measurments
+```R 
+thresholdForCommonObservations <- 168 
+``` 
+Number of common observations to considered a difference in measurments in P1
+```R
+thresholdForAbsoluteDifference <- 10 
+``` 
+Threshold above which citizen measurments are considered too different
+```R 
 thresholdForAbsoluteDifferencePercentage <- 0.25
 thresholdForDifference <- 0.05
-thresholdForDifferentStations <- 1 ``` ```R # Threshold showing how many close stations can have different measurments before exclusion
+thresholdForDifferentStations <- 1 
+``` 
+Threshold showing how many close stations can have different measurments before exclusion
+```R 
 
 for (i in 1:length(citizenGeohash)){
   InnerJoins[[i]] <- vector("list", length(ListOfCloseness[[i]]))
@@ -578,6 +590,5 @@ AllCitizenDaily <- AllCitizenDaily %>%
   summarise(count = n())%>%
   dplyr::arrange(date)
 
-ggplot() +
-  geom_bar(data=AllCitizenDaily, aes(x = date, y = count) , stat ="identity")
+ggplot() +  geom_bar(data=AllCitizenDaily, aes(x = date, y = count) , stat ="identity")
 ```
