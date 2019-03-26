@@ -18,6 +18,7 @@ This part of the text provides brief summary of our key findings on Module 2 fol
 
 This part of the text provides detailed information on the performed empirical analysis related to Module 2 of our research. The flowchart at presents the core stages of our analysis.
 
+![](/media/crisp-dm.png)
 Figure 8: Empirical analysis of Module 2: Workflow.
 
 ### Data Description (Understanding)
@@ -44,7 +45,7 @@ Table 1: Descriptive statistics of hourly PM10
 As might be seen hourly measurements has extreme maximum values and asymmetric (left-skewed) frequency distributions. Also, one of the stations (coded as 9642) is characterized by higher number of missing observations amounting to approximately 12% of the entire sample. The latter findings suggest that:
 
  
-
+![](/media/hourly-consentr.png)
 Figure 9: PM10 hourly concentration measured at station 9616.
 
 - Data interpolation should be introduced. As might the seen from **Figure 9** , a long period is missing for station 9616. Therefore, we should apply conservative interpolation technique.
@@ -108,9 +109,8 @@ The very first step of our preliminary analysis comes down to test the time seri
  measurements at the analyzed official stations for stationarity. **Figure 10** presents the autocorrelation function (ACF) for each of the analyzed times series on PM10 average daily concentration. We might note that all of the time series are characterized by fast decaying ACF so we can conclude on **stationarity**. This finding is supported by the augmented Dickey-Fuller test results, reported in **Table 4**.
 
  
-
-Figure 10: Autocorrelation function of PM10
- concentration. Each panel corresponds to one of the official stations.
+![](/media/acf_.png)
+Figure 10: Autocorrelation function of PM10 concentration. Each panel corresponds to one of the official stations.
 
 Table 4: Augmented Dickey-Fuller test results.
 
@@ -120,17 +120,19 @@ Table 4: Augmented Dickey-Fuller test results.
 | p-value | 0.01 | 0.01 | 0.01 | 0.01 | 0.01 |
 
 The next step of our preliminary analysis investigates the dependence between the concentration of PM10
- and the weather indicators. In text that follows, we report results only for one of the stations (this is station 9421) because similar dependencies are observed for rest of the stations (find rest of the results in section 4.3. Appendix M2.). **Figure 11** provides pairwise scatterplots where the _x_-axis represents particular weather indicator, while the _y_-axis corresponds to the level of PM10 concentration. **Figure 12** presents the correlation matrix in absolute terms via color code, where hotter colors correspond to stronger linear dependence.
+ and the weather indicators. In text that follows, we report results only for one of the stations (this is station 9421) because similar dependencies are observed for rest of the stations (find rest of the results in section Appendix M2.). **Figure 11** provides pairwise scatterplots where the _x_-axis represents particular weather indicator, while the _y_-axis corresponds to the level of PM10 concentration. **Figure 12** presents the correlation matrix in absolute terms via color code, where hotter colors correspond to stronger linear dependence.
 
+![](/media/scatter_features.png)
+Figure 11: Pairwise scatterplots for station 9421. The x-axis represents particular weather indicator, while the y-axis corresponds to the level of PM10 concentration. 
 
-
+![](/media/correlations_.png)
 Figure 12: Correlation matrix in absolute terms for station 9421.
 
 On the basis of **Figure 11** and **Figure 12** we might outline the following important data characteristics.
 
-- **Techniques based on feature space partitioning** , i.e. tree-based algorithms are preferred to linear models. Therefore, we build a predictive model via the **random forest approach**.
-- Whenever the level of PM10 is **above**** 50 µg/m**3 we note that the maximum relative humidity is 100%, also the minimum wind speed is 0 km/h and the average precipitation amount is 0 mm. Therefore, **introducing dummy variables** allowing for this fact would help in modelling the extreme air pollution levels.
-- **Weak to moderate correlation** is observed between the level of PM10 concentration and the available weather indicators. The highest values are slightly below **0.45 in absolute terms** and they correspond to the correlation between PM10 and pressure indicators as well as to PM10 and temperature indicators. Therefore, **introduction of additional features is necessary**.
-- Strong linear dependence is observed between groups of weather indicators (e.g. all indicators corresponding to temperature and dew point temperature are severely correlated). Therefore, **feature selection is required**.
+> - **Techniques based on feature space partitioning** , i.e. tree-based algorithms are preferred to linear models. Therefore, we build a predictive model via the **random forest approach**.
+> - Whenever the level of PM10 is **above**** 50 µg/m**3 we note that the maximum relative humidity is 100%, also the minimum wind speed is 0 km/h and the average precipitation amount is 0 mm. Therefore, **introducing dummy variables** allowing for this fact would help in modelling the extreme air pollution levels.
+> - **Weak to moderate correlation** is observed between the level of PM10 concentration and the available weather indicators. The highest values are slightly below **0.45 in absolute terms** and they correspond to the correlation between PM10 and pressure indicators as well as to PM10 and temperature indicators. Therefore, **introduction of additional features is necessary**.
+> - Strong linear dependence is observed between groups of weather indicators (e.g. all indicators corresponding to temperature and dew point temperature are severely correlated). Therefore, **feature selection is required**.
 
 
