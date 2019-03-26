@@ -45,7 +45,7 @@ Table 1: Descriptive statistics of hourly PM10
 As might be seen hourly measurements has extreme maximum values and asymmetric (left-skewed) frequency distributions. Also, one of the stations (coded as 9642) is characterized by higher number of missing observations amounting to approximately 12% of the entire sample. The latter findings suggest that:
 
  
-![](/media/hourly-consentr.png)
+![](/media/hourly_concetr.png)
 Figure 9: PM10 hourly concentration measured at station 9616.
 
 - Data interpolation should be introduced. As might the seen from **Figure 9** , a long period is missing for station 9616. Therefore, we should apply conservative interpolation technique.
