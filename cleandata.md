@@ -1,5 +1,3 @@
-
-
 # Clean data by geo locations (Module 1)
 
 ## Data description
@@ -11,10 +9,15 @@ The data used in the module consist of hourly measurements of PM10 air pollution
 The following procedure was used in order to identify citizen stations, where the data quality might be questionable and remove them from the dataset used in module 3:
 
 > Step 1. Calculate the distances between all the station pairs.
+
 > Step 2. Create а group for each station, which include the station (will be referred to as main station) and all the station within a certain distance of it (will be referred as group station).
+
 > Step 3. Calculate a dissimilarity measurement for each pair of main station- group station of in the group.
+
 > Step 4. Based on this dissimilarity measurement, identify the station which has the most main station-group station pairs with a big dissimilarity measurement. In case of a tie, pick one of the tied at random.
+
 > Step 5. Remove the station from the dataset and repeat from step 2.
+
 > Step 6. Stop when some condition is met.
 
 As can be seen from the procedure described above, the following things must be defined:
@@ -27,8 +30,11 @@ In this study the following was done:
 
 1. The Cartesian minimum distance was calculated using the longitude and latitude coordinates of the citizen stations and a threshold of 0.01 was used.
 2. The dissimilarity measure was defined the following way:
+
 a. The absolute difference in the PM10  for each hourly measurement, for each main station – group station was calculated.
+
 b. The relative difference in the PM10  for each hourly measurement, for each main station – group station was calculated, as the absolute difference divided by the bigger of the two measurements.
+
 c. The number of observations in common between the main station - group station pair was counted
 
 If (a) is more than 10, (b) is more than 25% than the single instance of measurement is considered dissimilar. The total number of dissimilar measurements is divided by the total number of common observations and a dissimilarity percent is calculated. However (c) must be at least 168(the number of hours in a week), in order to have a valid dissimilarity percent. If this is not the case, it is considered that the number of common observations is not enough to draw any conclusions and no score is calculated. The effect is the same, as if the group station is not part of the group.
@@ -112,8 +118,9 @@ for (i in 1:length(ddeu)){
   teu[[i]]=as.data.frame(seq.POSIXt(from=min(ddeu[[i]]$time),to=max(ddeu[[i]]$time), by="hour"))
   colnames(teu[[i]])[1]="time"
 }
-
-``` ```R # Make a list of time series on official P10 concentration for every station
+```
+Make a list of time series on official P10 concentration for every station
+```R 
 if(!require(dplyr)){
   install.packages("dplyr")
   library(dplyr)
@@ -124,14 +131,13 @@ if(!require(devtools)){
   library(devtools)
 }
 
-
-
 for (i in 1:length(ddeu)){
   teu[[i]]=left_join(teu[[i]],ddeu[[i]],by="time")
 }
 names(teu)=names(ddeu)
-
-``` ```R # Bind datasets 2017 and 2018 for each of the official points
+```
+Bind datasets 2017 and 2018 for each of the official points
+```R 
 teu$st9421=bind_rows(teu$st9421_2017,teu$st9421_2018)
 teu$st9572=bind_rows(teu$st9572_2017,teu$st9572_2018)
 teu$st9616=bind_rows(teu$st9616_2017,teu$st9616_2018)
@@ -142,39 +148,49 @@ teu=teu[c("st9421", "st9572","st9616","st9642","st60881")]
 for (i in 1:length(teu)){
   colnames(teu[[i]])[2]="P1"}
 rm(i,ddeu)
-
-``` ```R # Check for duplicates
+```
+Check for duplicates
+```R 
 sapply(teu,dim)[1,]
 sum(duplicated(teu[[1]]$time)) #0
 sum(duplicated(teu[[2]]$time)) #0
 sum(duplicated(teu[[3]]$time)) #0
 sum(duplicated(teu[[4]]$time)) #0
 sum(duplicated(teu[[5]]$time)) #0
-
-``` ```R # Interpolate missing values for P1eu
+```
+Interpolate missing values for P1eu
+```R 
 if(!require(imputeTS)){
   install.packages("imputeTS")
   library(imputeTS)
 }
-``` ```R # Check the numer of missing obs
+```
+Check the numer of missing obs
+```R 
 sapply(sapply(teu,is.na),sum)
 sapply(sapply(teu,is.na),sum)/sapply(teu,dim)[1,]
-``` ```R # Apply linear interpolation
+```
+Apply linear interpolation
+```R 
 for (i in 1:length(teu)){
   teu[[i]][,2]=na.interpolation(teu[[i]][,2], option="linear")
 }
 rm(i)
-
-``` ```R # Aggregate official measuremnets on daily basis ----
-
-``` ```R # Extract date from the time variable
+``` 
+**Aggregate official measuremnets on daily basis**
+Extract date from the time variable
+```R 
 for (i in 1:length(teu)){
   teu[[i]]$date=date(teu[[i]]$time)
 }
 rm(i)
+```
+Thresholds
+```R 
 
-#Thresholds
-thresholdForRemovalMissingP1 <- 0.2 ``` ```R # Removes all observations where the P1 is equal to 0 for more than the threshold % of observations
+thresholdForRemovalMissingP1 <- 0.2 
+```
+```R # Removes all observations where the P1 is equal to 0 for more than the threshold % of observations
 thresholdP1ForDeviationFromOfficial <- 1.25 ``` ```R # Caps the P1 of the citizen data at thresholdP1ForDeviationFromOfficial% of official P1 maximum
 thresholdForMinimumObservationDays <- 90 ``` ```R # Removes all observations with less than thresholdForMinimumObservationDays days of observation history
 thresholdForCloseness <- 0.01 ``` ```R # Determines which stations are considered close enough to comapre the P1 measurments
