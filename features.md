@@ -1,7 +1,7 @@
 # Data Analysis (Module 2, p. 2/2)
 ## Feature Engineering
 
-Based on the findings documented in section 4.2.3. Preliminary Analysis we define the feature matrix that is used for the predictive model building.
+Based on the findings documented in section Preliminary Analysis we define the feature matrix that is used for the predictive model building.
 
 We first make **feature selection** on the basis of the correlation analysis as well as taking into account results documented in the literature. In particular, the research of (Kurt, et al., 2008) uses weather indicators that are similar to those available from the Sofia Airport Weather Station. The authors suggest the following indicators as input in their model: weather condition, day and night temperature, humidity, pressure, wind speed and wind direction, day of the week. Therefore, minimum and maximum temperature, average humidity, and average pressure are initially selected. Instead of taking directly the observations on wind speed, we use them to construct an additional feature as explained in the next paragraph.
 
