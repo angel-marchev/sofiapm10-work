@@ -1,4 +1,4 @@
 theme: jekyll-theme-leap-day
 title: A study to predict air pollution in Sofia geo-locations
 description: 
-show_downloads: "false"
+show_downloads: 
