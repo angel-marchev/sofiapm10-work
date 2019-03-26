@@ -1,4 +1,4 @@
-# Data analysis (Module 2)
+# Data analysis (Module 2, p. 1/2)
 
 This part of the text provides brief summary of our key findings on Module 2 followed by a detailed exhibition of our empirical analysis. We first present some of the most important data characteristics followed by a description of the data preparation process. On the basis of the performed preliminary analysis we chose random forest as our core modelling approach. At the same time, the stage of preliminary analysis supports **the process of feature engineering**. The latter is presented in greater detail as it forms an **important contribution both to the topic of Sofia air pollution modelling as well as to the general strand in literature engaged with air pollution predictive models**. Next, we present results of model estimation and highlight which variables are the strongest predictors. Out-of-sample prediction accuracy is reported at the end of the section.
 
