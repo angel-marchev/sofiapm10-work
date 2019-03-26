@@ -1,4 +1,5 @@
-[__Home__](README.md)[__Introduction__](introduction.md)[__Methodology__](methodology.md)[__Clean Data__](cleandata.md)[__module21__](cleandata.md)[__module22__](cleandata.md)[__Prediction__](prediction.md)
+{% include header.html %}
+[__[Home]__](README.md) [__Introduction__](introduction.md) [__Methodology__](methodology.md)[__Clean Data__](cleandata.md)[__module21__](cleandata.md)[__module22__](cleandata.md)[__Prediction__](prediction.md)
 
 # Next day prediction (Module 3)
 
