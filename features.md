@@ -1,8 +1,5 @@
 
-
-1.
-  1.
-    1. 1.1.1Feature Engineering
+#Feature Engineering
 
 Based on the findings documented in section 4.2.3. Preliminary Analysis we define the feature matrix that is used for the predictive model building.
 
