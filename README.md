@@ -1,12 +1,11 @@
-
-
 # A study to predict air pollution in Sofia geo-locations
 
-# 1prof. Boryana Pelova, PhD, prof. Angel Marchev, PhD, Vladimir Zakov, Denis Stefanov, Kiril Genov
+### prof. Boryana Pelova, PhD, prof. Angel Marchev, PhD, Vladimir Zakov, Denis Stefanov, Kiril Genov
 
-# 2Faculty of Economics and Business Administration, Sofia University
+### Faculty of Economics and Business Administration, Sofia University
 
-# 3Acknowledgements
+
+# Acknowledgements
 
 Fund
 
@@ -30,7 +29,7 @@ To do!
 
 
 
-# 4Executive summary
+# Executive summary
 
 To do!
 
