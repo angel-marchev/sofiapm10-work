@@ -348,7 +348,9 @@ EEADataMaxByHour <- EEAHourly %>%
   summarise(maxP1 = max(P1), minP1 = min(P1))
 
 DataAllSofia <- left_join(DataAllSofia,EEADataMaxByHour, by = c("time" = "time"))
-#Keep only citizen data in the timeframe
+```
+Keep only citizen data in the timeframe
+```R
 DataAllSofia = DataAllSofia[DataAllSofia$time >= min(EEAHourly$time),]
 DataAllSofia = DataAllSofia[DataAllSofia$time <= max(EEAHourly$time),]
 rm(EEADataMaxByHour,teu,EEAHourly)
@@ -365,16 +367,19 @@ for (i in seq(from = 1, to = 2, by = 0.05)){
 }
 names(DeviationThreshold) <- c("Threshold","CappedP1Count","CappedP1Percent")
 
-ggplot() +
-  geom_bar(data=DeviationThreshold, aes(x = Threshold, y = CappedP1Count) , stat ="identity")
+ggplot() +  geom_bar(data=DeviationThreshold, aes(x = Threshold, y = CappedP1Count) , stat ="identity")
 
-ggplot() +
-  geom_bar(data=DeviationThreshold, aes(x = Threshold, y = CappedP1Percent) , stat ="identity")
+ggplot() +  geom_bar(data=DeviationThreshold, aes(x = Threshold, y = CappedP1Percent) , stat ="identity")
 
-thresholdP1ForDeviationFromOfficial <- 1.25 ``` ```R # Caps the P1 of the citizen data at thresholdP1ForDeviationFromOfficial% of official P1 maximum
+thresholdP1ForDeviationFromOfficial <- 1.25 
+``` 
+Caps the P1 of the citizen data at thresholdP1ForDeviationFromOfficial% of official P1 maximum
+```R
 DataAllSofia <- DataAllSofia %>%
   mutate(P1 = ifelse(P1 >= thresholdP1ForDeviationFromOfficial * maxP1,thresholdP1ForDeviationFromOfficial * maxP1,P1))
-#Remove obs with less than 90 days
+```
+Remove obs with less than 90 days
+```R
 GroupedDataSofiaGeohash <- DataAllSofia %>%
   group_by(geohash) %>%
   summarise(obs = n(), tmin = min(time), tmax = max(time), days = as.numeric(tmax - tmin), lat = mean(lat), lng = mean(lng)) %>%
@@ -393,11 +398,9 @@ for (i in seq(from = 1, to = 180, by = 1)){
 }
 names(DaysOfObservationsThreshold) <- c("Threshold","DaysCount","DaysPercent")
 
-ggplot() +
-  geom_bar(data=DaysOfObservationsThreshold, aes(x = Threshold, y = DaysCount) , stat ="identity")
+ggplot() +  geom_bar(data=DaysOfObservationsThreshold, aes(x = Threshold, y = DaysCount) , stat ="identity")
 
-ggplot() +
-  geom_bar(data=DaysOfObservationsThreshold, aes(x = Threshold, y = DaysPercent) , stat ="identity")
+ggplot() +  geom_bar(data=DaysOfObservationsThreshold, aes(x = Threshold, y = DaysPercent) , stat ="identity")
 
 thresholdForMinimumObservationDays = 90
 removeWithoutEnoughObservations <- GroupedDataSofiaGeohash[GroupedDataSofiaGeohash$days <= thresholdForMinimumObservationDays,c("geohash","lng","lat")]
