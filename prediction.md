@@ -463,52 +463,45 @@ Creating a list with features for each cluster
 ```R
 feat<-list()
 ```
-# Changing the class of the factor variables 
-# and ordering the variables so that it is easier to perform the automatic feature selection in the next step
+Changing the class of the factor variables and ordering the variables so that it is easier to perform the automatic feature selection in the next step
+```R
 for (i in 1:length(citizenDaily)){
-  
   citizenDaily[[i]]$day<-as.factor(citizenDaily[[i]]$day)
   citizenDaily[[i]]$month<-as.factor(citizenDaily[[i]]$month)
   citizenDaily[[i]]$D1<-as.factor(citizenDaily[[i]]$D1)
   citizenDaily[[i]]$D2<-as.factor(citizenDaily[[i]]$D2)
   citizenDaily[[i]]$D3<-as.factor(citizenDaily[[i]]$D3)
   citizenDaily[[i]]$D<-as.factor(citizenDaily[[i]]$D)
-  
-  citizenDaily[[i]]<-citizenDaily[[i]][,c(3, #P1
-                                          10:15, # Factor variables: day, month, D1, D2, D3, D
-                                          6:9, 16:31,  # all remaining variables
-                                          1:2, # date, geohash
-                                          4:5)] # lng, lat
+  citizenDaily[[i]]<-citizenDaily[[i]][,c(3, \# P1
+                                          10:15, \# Factor variables: day, month, D1, D2, D3, D
+                                          6:9, 16:31,  \# all remaining variables
+                                          1:2, \# date, geohash
+                                          4:5)] \# lng, lat
   
 }
-
-# Applying the Lasso method with a dataframe scaled for the non-factor variables
+```
+Applying the Lasso method with a dataframe scaled for the non-factor variables
+```R
 citizenDaily_scaled<-list()
-
 for (i in 1:length(citizenDaily)){
-  
   citizenDaily_scaled[[i]]<-citizenDaily[[i]][,-(28:31)]
-  
   citizenDaily_scaled[[i]][,2:7]<-citizenDaily_scaled[[i]][,2:7]
   citizenDaily_scaled[[i]][,8:27]<-scale(citizenDaily_scaled[[i]][,8:27], center = TRUE, scale = TRUE)
-  
   eq1<-cv.glmnet(x=data.matrix(citizenDaily_scaled[[i]][,2:length(names(citizenDaily_scaled[[i]]))]),
                  y=as.numeric(citizenDaily_scaled[[i]]$P1),
                  alpha=1)
-  
   eq2<-glmnet(x=data.matrix(citizenDaily_scaled[[i]][,2:length(names(citizenDaily_scaled[[i]]))]),
               y=as.numeric(citizenDaily_scaled[[i]]$P1),
               lambda=eq1$lambda.min)
-  
   feat[[i]]=as.data.frame(eq2$beta[which(abs(eq2$beta)>thresholdForBeta),])
-  
 }
 
 names(citizenDaily_scaled)<-names(citizenDaily)
 names(feat)<-names(citizenDaily)
 rm(eq1, eq2)
-
-# Change i=1...81 to see feature importance for each geo unit
+```
+Change i=1...81 to see feature importance for each geo unit
+```R
 i=1
 {
   dd_importance<-feat[[i]]
@@ -525,11 +518,11 @@ i=1
     labs(title=title_name) +
     labs(x="Features Names", y ="Beta Coefficient from LASSO")
 }
+```
+The feat list represents a list with the features that have the highest impact on the response variable P1 for each of the clusters
 
-# The feat list represents a list with the features that have the highest impact on the response variable P1 for each of the clusters
-
-# Now let's create a list with dataframes containing the response variable and the features with the highest impact for each cluster  
-
+Now let's create a list with dataframes containing the response variable and the features with the highest impact for each cluster  
+```R
 model_list<-list()
 empty_models<-vector()
 #save.image(file = "beforemodelling.RData")
@@ -544,8 +537,9 @@ for (i in 1:length(feat)){
 }
 
 names(model_list)<-names(citizenDaily)
-
-# Remove clusters for which no features were selected by Lasso except for the intercept
+```
+Remove clusters for which no features were selected by Lasso except for the intercept
+```R
 if (length(empty_models)==0){
   model_list_final_full<-model_list
   print("There are no clusters with less than one beta coefficient")
@@ -554,8 +548,9 @@ if (length(empty_models)==0){
 }
 
 rm(model_list, empty_models) # Maybe remove citizenDaily, citizenDaily_scaled, feat, i, thresholdForBeta
-
-# Create a shorter dataframe for the modelling. Later we'll get back to the geohash and coordinates
+```
+Create a shorter dataframe for the modelling. Later we'll get back to the geohash and coordinates
+```R
 model_list_final_short<-list()
 
 for (i in 1:length(model_list_final_full)){
@@ -564,15 +559,14 @@ for (i in 1:length(model_list_final_full)){
 
 names(model_list_final_short)<-names(model_list_final_full)
 
-
 if (!require(ggplot2)) {
   install.packages("ggplot2")
   require(ggplot2)
 }
+```
 
-
-# Number of Features by Geo Unit Barchart
-
+Number of Features by Geo Unit Barchart
+```R
 dd_len<-vector()
 for (i in 1:length(model_list_final_full)){
   dd_len<-c(dd_len,length(model_list_final_full[[i]][,5:length(colnames(model_list_final_full[[i]]))]))
@@ -591,23 +585,24 @@ ggplot(data=dd_len, aes(x=geo_units, y=dd_len)) +
   scale_fill_gradient("") +
   labs(title="Number of Features by Geo Unit") +
   labs(x="Geo Unit Number", y ="Features")
-# Exported as 760 * 380
+\# Exported as 760 * 380
 
 summary(dd_len$dd_len)
-
-# Building prediction models ----
-# You can clean all the environment before modelling
-#save(cluster_list_ver3, file="cluster_list_ver3")
-#rm(list=ls())
-#load("cluster_list_ver3")
-
-
-# DIVIDE DATASET INTO TRAINING AND TEST
-
+```
+#### Building prediction models
+You can clean all the environment before modelling
+```R
+save(cluster_list_ver3, file="cluster_list_ver3")
+rm(list=ls())
+load("cluster_list_ver3")
+```
+Step 1 Divide dataset into training and test set
+```R
 rmse<-list()
 for(k in 5:1){
-
-# First, let's create two lists for training and test data
+```
+First, let's create two lists for training and test data
+```R
 train_list<-list()
 test_list<-list()
 
@@ -618,9 +613,10 @@ for (i in 1:length(model_list_final_short)){
 names(train_list)<-names(model_list_final_short)
 names(test_list)<-names(model_list_final_full)
 rm(i)
-
-# For testing purposes, we would separate all values except for the last one
-# !!! NB: Here we can test vs the last day (August 14th, in case we have data for all clusters up to that date)
+```
+For testing purposes, we would separate all values except for the last one
+!!! NB: Here we can test vs the last day (August 14th, in case we have data for all clusters up to that date)
+```R
 if (!require(lubridate)) {
   install.packages("lubridate")
   require(lubridate)
@@ -629,24 +625,21 @@ if (!require(lubridate)) {
 for (i in 1:length(model_list_final_short)){
   train_list[[i]]<-model_list_final_short[[i]][1:(length(rownames(model_list_final_short[[i]]))-(1+(k-1))),] # all observations except for the last one
   test_list[[i]]<-model_list_final_short[[i]][(length(rownames(model_list_final_short[[i]]))-(k-1)),] # the last observation
-
 }
+```
 
-
-# Step 2: Build the prediction model ----
-
+Step 2: Build the prediction model
+```R
 if (!require(forecast)) {
   install.packages("forecast")
   require(forecast)
 }
 
 arima_list<-list()
-
-# Our prediction models for each geo unit would be based on the ARIMA-X model, which is an ARIMA model with external factors.
-# The order of the ARIMA models is defined by the R's built in auto.arima function
-# The external factors for each model are different, based on the feature selection procedure above
-# The result of this procedure would be a list of different model for each geo unit
-# NB: THIS LOOP TAKES SOME TIME TO RUN!!!
+```
+Our prediction models for each geo unit would be based on the ARIMA-X model, which is an ARIMA model with external factors. The order of the ARIMA models is defined by the R's built in auto.arima function. The external factors for each model are different, based on the feature selection procedure above. The result of this procedure would be a list of different model for each geo unit.
+NB: THIS LOOP TAKES SOME TIME TO RUN!!!
+```R
 for (i in 1:length(train_list)){
   arima_list[[i]]<-arima(x = log(train_list[[i]]$P1), # ARIMA
                          order=arimaorder(auto.arima(train_list[[i]]$P1)), # ORDER - for each geo unit
@@ -655,31 +648,30 @@ for (i in 1:length(train_list)){
 
 
 names(arima_list)<-names(train_list)
-# ACCURACY OF THE MODELS
-
+```
+ACCURACY OF THE MODELS
+```R
 results <- list()
 for (i in 1:length(test_list)){
   
   results[[i]] <- predict(arima_list[[i]], newxreg = data.matrix(test_list[[i]][,3:length(colnames(test_list[[i]]))]))
   
 }
+```
 
-# Step 3: Check the accuracy of the model ----
+Step 3: Check the accuracy of the model
 
-# MAE, RMSE, etc.
+MAE, RMSE, etc.
+```R
 final <- list()
 for (i in 1:length(arima_list)){
-  
   final[[i]] <- data.frame(
     "P1" = model_list_final_full[[i]][length(rownames(model_list_final_full[[i]])),which(colnames(model_list_final_full[[1]])=="P1")],
     "P1_Predicted" = exp(as.numeric(results[[i]])[1]),
     "RMSE" = accuracy(f=exp(as.numeric(results[[i]])[1]),x=as.numeric(test_list[[i]]$P1))[2], #accuracy(arima_list[[i]])[2],
     "lng" = model_list_final_full[[i]][1,which(colnames(model_list_final_full[[1]])=="lng")],
     "lat" = model_list_final_full[[i]][1,which(colnames(model_list_final_full[[1]])=="lat")])
-    
-
-
-}
+  }
 
 names(final)<-names(model_list_final_full)
 dd <- as.data.frame(matrix(unlist(final),nrow=length(final), byrow=T))
@@ -687,13 +679,15 @@ colnames(dd)<-colnames(final[[1]])
 
 rmse[[k]]<-dd$RMSE
 }
-
-# get the mean of the RMSE value of the 5 runs for each geounit
+```
+get the mean of the RMSE value of the 5 runs for each geounit
+```R
 rmse <- as.data.frame(matrix(unlist(rmse), nrow=length(unlist(rmse[1]))))
 rmse$RMSE_MEAN <- rowMeans(rmse)
 summary(rmse$RMSE_MEAN)
-
-# plot a histgoram of the RMSE's mean
+```
+plot a histgoram of the RMSE's mean
+```R
 ggplot(data=rmse, aes(rmse$RMSE_MEAN)) + 
   geom_histogram(col="black", 
                  aes(fill=..count..),
@@ -701,7 +695,6 @@ ggplot(data=rmse, aes(rmse$RMSE_MEAN)) +
   scale_fill_gradient("") + 
   labs(title="Histogram of RMSE (5 iterations of 81 model fits vs 81 test sets)") +
   labs(x="mean(RMSE)", y="Frequency")
-
 
 dd_map<-dd[,c(which(colnames(dd)==c("lng")),which(colnames(dd)==c("lat")))]
 
@@ -714,12 +707,12 @@ dd_map %>%
   leaflet() %>%
   addTiles() %>%
   addCircleMarkers(weight = 3, color = "blue")
+```
+Step 4: Prepare for Shiny 
+build a dataset to feed the shiny app - https://sofiaairfeba.shinyapps.io/feba_sofia_air/
+3 types of observations for PM10 are needed - yesterday's, today's and the predicted one for tomorrow
 
-# Step 4: Prepare for Shiny 
-
-# build a dataset to feed the shiny app - https://sofiaairfeba.shinyapps.io/feba_sofia_air/
-# 3 types of observations for PM10 are needed - yesterday's, today's and the predicted one for tomorrow
-
+```R
 shiny_set <- list()
 for (i in 1:length(arima_list)){
   
@@ -730,12 +723,9 @@ for (i in 1:length(arima_list)){
     "P1" = model_list_final_full[[i]][length(rownames(model_list_final_full[[i]]))-2,which(colnames(model_list_final_full[[1]])=="P1")],
     "P1.1" = model_list_final_full[[i]][length(rownames(model_list_final_full[[i]]))-1,which(colnames(model_list_final_full[[1]])=="P1")],
     "P1.2" = exp(as.numeric(results[[i]])[1]))
-  
 }
-
-# export .csv to feed the Shiny app
-#write.csv(ldply(shiny_set, data.frame), file = "C:\\Users\\O38648\\Box Sync\\R Scripts\\Shiny\\Leaflet\\feba_sofia_air\\data\\sofia_summary.csv", row.names = FALSE, na = "")
-
-
-
-
+```
+export .csv to feed the Shiny app
+```R
+write.csv(ldply(shiny_set, data.frame), file = "/sofia_summary.csv", row.names = FALSE, na = "")
+```
