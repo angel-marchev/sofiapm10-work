@@ -7,7 +7,7 @@ This study is organized in cooperation with the Science meets Regions event on E
 
 Taking on the biggest climate-related challenge of the City of Sofia is not an easy undertaking. It requires multi-domain knowledge and interdisciplinary research approach, while there are many aspects to be studied. The current study focuses on one day prediction of air quality by location which would give most useful application to the citizens, but further research may be conducted on the polluting factors.
 
- ![](/media/1.png)
+ ![](/media/01.png)
 
 Figure 1: Urban population exposure to concentrations above EU standards. Source: (European Environmental Agency, 2017)
 
