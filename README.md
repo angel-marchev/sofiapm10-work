@@ -9,7 +9,8 @@ Sofia lab
 
 Sofia Municipality
 
-Sofia Uni FEBA
+Sofia Uni FEBA & Teo 
+
 
 Code Foundation – Bulgaria &amp; AirBG.info, OK Lab Stuttgart &amp; LuftDaten.info
 
@@ -21,7 +22,9 @@ Jrc pisano
 
 Ivan Denkstatt, Ekaterina Telelink
 
-# About the authors
+# About the team
+
+# Research team
 
 ## prof. Boryana Pelova, PhD
 
@@ -32,6 +35,12 @@ Ivan Denkstatt, Ekaterina Telelink
 ## Denis Stefanov
 
 ## Kiril Genov
+
+
+# Project manager
+
+## Atanas Georgiev 
+
 
 [__Summary__](introduction.html)
 
